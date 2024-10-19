@@ -22,8 +22,8 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     }
   }
 
-  async addThread(addThread) {
-    const { title, body, owner } = addThread;
+  async addThread(newThread, owner) {
+    const { title, body } = newThread;
     const id = `thread-${this._idGenerator()}`;
     const dates = new Date().toISOString();
 
@@ -33,7 +33,11 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     };
 
     const result = await this._pool.query(query);
-    return new AddedThread({ ...result.rows[0] });
+    return new AddedThread({
+      id: result.rows[0].id,
+      title: result.rows[0].title,
+      owner: result.rows[0].owner,
+    });
   }
 }
 

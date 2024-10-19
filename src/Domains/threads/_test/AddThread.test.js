@@ -1,26 +1,26 @@
-const AddThread = require("../entities/AddThread");
+const AddThread = require('../entities/AddThread');
 
-describe("a Add Thread entities", () => {
-  it("should throw error when payload did not contain needed property", () => {
+describe('a Add Thread entities', () => {
+  it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
-      title: "abc",
+      title: 'abc',
     };
 
     // Action and Assert
     expect(() => new AddThread(payload)).toThrowError(
-      "ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY"
+      'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
-  it("should throw error when payload did not meet data type specification", () => {
+  it('should throw error when payload did not meet data type specification', () => {
     // Arrange
     const payload = {
-      title: "A Thread",
+      title: 'A Thread',
       body: true,
     };
     // Action and Assert
     expect(() => new AddThread(payload)).toThrowError(
-      "ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
+      'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 

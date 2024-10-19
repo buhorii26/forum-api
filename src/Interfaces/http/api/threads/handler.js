@@ -8,24 +8,16 @@ class ThreadHandler {
 
   async postThreadHandler(request, h) {
     const { id: owner } = request.auth.credentials;
-    const addThreadUseCase = this._container.getInstance(AddThreadUseCase.id);
-    try {
-      const addedThread = await addThreadUseCase.execute(
-        owner,
-        request.payload,
-      );
-      const response = h.response({
-        status: 'success',
-        data: {
-          addedThread,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (err) {
-      console.error(err); // Log error detail untuk investigasi
-      return h.internalServerError('Terjadi kegagalan pada server kami');
-    }
+    const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
+    const addedThread = await addThreadUseCase.execute(owner, request.payload);
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedThread,
+      },
+    });
+    response.code(201);
+    return response;
   }
 }
 module.exports = ThreadHandler;
