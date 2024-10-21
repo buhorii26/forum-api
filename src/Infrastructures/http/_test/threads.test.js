@@ -67,5 +67,30 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('tidak dapat membuat thread baru, input tidak lengkap');
     });
+
+    it('should response 401 if no authorization', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const requestPayload = {
+        title: 'First Thread',
+        body: 'This is first thread',
+      };
+      const accessToken = 'wrongtoken';
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toStrictEqual(401);
+      expect(responseJson.error).toStrictEqual('Unauthorized');
+    });
   });
 });

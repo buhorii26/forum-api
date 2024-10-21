@@ -5,8 +5,8 @@ const AddThreadUseCase = require('../AddThreadUseCase');
 
 describe('AddThreadUseCase', () => {
   /**
-     * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
-     */
+   * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
+   */
   it('should orchestrating the add thread action correctly', async () => {
     // Arrange
 

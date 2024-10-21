@@ -1,6 +1,5 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
-const Inert = require('@hapi/inert');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
 const threads = require('../../Interfaces/http/api/threads');
@@ -17,9 +16,6 @@ const createServer = async (container) => {
   await server.register([
     {
       plugin: Jwt,
-    },
-    {
-      plugin: Inert,
     },
   ]);
 

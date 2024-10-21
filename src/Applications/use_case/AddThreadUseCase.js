@@ -6,13 +6,8 @@ class AddThreadUseCase {
   }
 
   async execute(owner, useCasePayload) {
-    try {
-      console.log('useCasePayload:', useCasePayload);
-      const newThread = new AddThread({ ...useCasePayload, owner });
-      return await this._threadRepository.addThread(newThread);
-    } catch (error) {
-      throw new Error('Failed to add thread');
-    }
+    const newThread = new AddThread({ ...useCasePayload, owner });
+    return this._threadRepository.addThread(newThread);
   }
 }
 
