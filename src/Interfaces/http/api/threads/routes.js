@@ -5,6 +5,10 @@ const routes = (handler) => [
     handler: (request, h) => handler.postThreadHandler(request, h),
     options: {
       auth: 'forumapi_jwt',
+      payload: {
+        allow: 'application/json',
+        parse: true,
+      },
     },
   },
 ];
