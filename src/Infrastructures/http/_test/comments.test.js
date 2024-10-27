@@ -144,7 +144,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'cannot create new comment due to missing required property in payload',
+        'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
       );
     });
 
@@ -201,7 +201,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'cannot create new comment due to invalid payload property type',
+        'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
       );
     });
   });
