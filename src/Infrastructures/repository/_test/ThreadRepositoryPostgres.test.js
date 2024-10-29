@@ -24,56 +24,43 @@ describe('ThreadRepositoryPostgres', () => {
   });
 
   describe('addThread function', () => {
-    it('should persist added thread ', async () => {
-      // Arrange
+    it('should persist adding thread and return added thread correctly', async () => {
       const newThread = new AddThread({
-        title: 'First thread',
-        body: 'This is a new thread',
-        owner: 'user-123',
+        title: 'Thread title',
+        body: 'Thread body',
       });
-
       const fakeIdGenerator = () => '123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
         fakeIdGenerator,
       );
 
-      // Action
-      await threadRepositoryPostgres.addThread(newThread, owner);
+      await threadRepositoryPostgres.addThread('user-123', newThread);
 
-      // Assert
-      const threads = await ThreadsTableTestHelper.findThreadById('thread-123');
-
-      expect(threads).toHaveLength(1);
+      const thread = await ThreadsTableTestHelper.findThreadById('thread-123');
+      expect(thread).toHaveLength(1);
     });
 
-    it('should return thread correctly', async () => {
-      // Arrange
-
+    it('should return added thread correctly', async () => {
       const newThread = new AddThread({
-        title: 'First thread',
-        body: 'This is a new thread',
-        owner: 'user-123',
+        title: 'Thread title',
+        body: 'Thread body',
       });
-
       const fakeIdGenerator = () => '123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
         fakeIdGenerator,
       );
 
-      // Action
       const addedThread = await threadRepositoryPostgres.addThread(
+        'user-123',
         newThread,
-        owner,
       );
-
-      // Assert
 
       expect(addedThread).toStrictEqual(
         new AddedThread({
           id: 'thread-123',
-          title: 'First thread',
+          title: 'Thread title',
           owner: 'user-123',
         }),
       );
