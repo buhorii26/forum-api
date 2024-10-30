@@ -88,6 +88,7 @@ class CommentRepositoryPostgres extends CommentRepository {
       new DetailComment({
         ...row,
         isDelete: row.is_delete,
+        replies: row.replies || [], // Jika replies tidak ada, atur ke array kosong
       })
     ));
   }

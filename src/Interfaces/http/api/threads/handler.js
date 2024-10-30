@@ -54,13 +54,12 @@ class ThreadHandler {
     const getDetailThreadUseCase = this._container.getInstance(
       GetDetailThreadUseCase.name,
     );
+
     const thread = await getDetailThreadUseCase.execute(threadId);
 
     const response = h.response({
       status: 'success',
-      data: {
-        thread,
-      },
+      data: { thread },
     });
     response.code(200);
     return response;

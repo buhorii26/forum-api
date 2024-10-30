@@ -2,28 +2,45 @@ class DetailComment {
   constructor(payload) {
     this._verifyPayload(payload);
 
-    this.id = payload.id;
-    this.username = payload.username;
-    this.date = payload.date;
-    this.content = (payload.isDelete)
-      ? '**komentar telah dihapus**'
-      : payload.content;
+    const {
+      id, username, date, content, replies,
+    } = this._remapPayload(payload);
+
+    this.id = id;
+    this.username = username;
+    this.date = date;
+    this.content = content;
+    this.replies = replies;
   }
 
-  _verifyPayload(payload) {
-    const {
-      id, username, date, content,
-    } = payload;
+  _verifyPayload({
+    id, username, date, content, replies = [],
+  }) {
+    if (!id || !username || !date || !content || !replies) {
+      throw new Error('COMMENT_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
+    }
 
-    [id, username, date, content].forEach((item) => {
-      if (!item) {
-        throw new Error('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
-      }
+    if (
+      typeof id !== 'string'
+      || typeof username !== 'string'
+      || typeof date !== 'string'
+      || typeof content !== 'string'
+      || !Array.isArray(replies)
+    ) {
+      throw new Error('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
+  }
 
-      if (typeof item !== 'string') {
-        throw new Error('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
-      }
-    });
+  _remapPayload({
+    id, username, date, content, replies = [], isDelete,
+  }) {
+    return {
+      id,
+      username,
+      date,
+      content: isDelete ? '**komentar telah dihapus**' : content,
+      replies,
+    };
   }
 }
 
