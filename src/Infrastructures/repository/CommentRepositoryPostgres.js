@@ -59,7 +59,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  async deleteComment(commentId) {
+  async deleteCommentById(commentId) {
     const isDelete = true;
 
     const query = {
