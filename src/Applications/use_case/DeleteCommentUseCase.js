@@ -8,7 +8,7 @@ class DeleteCommentUseCase {
     await this._commentRepository.checkAvailabilityComment(commentId);
     await this._commentRepository.verifyCommentOwner(commentId, owner);
 
-    return this._commentRepository.deleteComment(commentId);
+    return this._commentRepository.deleteCommentById(commentId);
   }
 }
 

@@ -33,10 +33,10 @@ class CommentRepositoryPostgres extends CommentRepository {
     });
   }
 
-  async checkAvailabilityComment(commentId) {
+  async checkAvailabilityComment(id) {
     const query = {
       text: 'SELECT * FROM comments WHERE id = $1',
-      values: [commentId],
+      values: [id],
     };
 
     const result = await this._pool.query(query);
@@ -76,21 +76,23 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getCommentByThreadId(threadId) {
     const query = {
-      text:
-      `SELECT comments.*, users.username AS username FROM comments
-      JOIN users ON comments.owner = users.id WHERE thread_id = $1`,
+      text: `SELECT comments.id, users.username, comments.date, comments.is_delete, comments.content
+        FROM comments
+        INNER JOIN users ON comments.owner = users.id
+        WHERE comments.thread_id = $1
+        ORDER BY comments.date ASC`,
       values: [threadId],
     };
 
     const result = await this._pool.query(query);
 
-    return result.rows.map((row) => (
-      new DetailComment({
+    return result.rows.map(
+      (row) => new DetailComment({
         ...row,
         isDelete: row.is_delete,
         replies: row.replies || [], // Jika replies tidak ada, atur ke array kosong
-      })
-    ));
+      }),
+    );
   }
 }
 
