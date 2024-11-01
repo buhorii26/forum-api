@@ -9,44 +9,22 @@ class ThreadHandler {
   }
 
   async postThreadHandler(request, h) {
-    try {
-      const addThreadUseCase = this._container.getInstance(
-        AddThreadUseCase.name,
-      );
-      const { id: owner } = request.auth.credentials;
+    const addThreadUseCase = this._container.getInstance(
+      AddThreadUseCase.name,
+    );
+    const { id: owner } = request.auth.credentials;
 
-      const addedThread = await addThreadUseCase.execute(
-        owner,
-        request.payload,
-      );
+    const addedThread = await addThreadUseCase.execute(
+      owner,
+      request.payload,
+    );
 
-      const response = h.response({
-        status: 'success',
-        data: { addedThread },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      if (
-        error.message === 'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY'
-        || error.message === 'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'
-      ) {
-        // Penanganan 404 Not found error
-        return h
-          .response({
-            status: 'fail',
-            message: error.message,
-          })
-          .code(400);
-      }
-      // Penanganan 404 Not found error
-      return h
-        .response({
-          status: 'error',
-          message: error.message,
-        })
-        .code(500);
-    }
+    const response = h.response({
+      status: 'success',
+      data: { addedThread },
+    });
+    response.code(201);
+    return response;
   }
 
   async getThreadHandler(request, h) {
