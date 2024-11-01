@@ -18,7 +18,7 @@ class DetailThread {
     id, title, body, date, username, comments,
   }) {
     if (!id || !title || !body || !date || !username || !comments) {
-      throw new Error('THREAD_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (
@@ -29,7 +29,7 @@ class DetailThread {
       || typeof username !== 'string'
       || !Array.isArray(comments)
     ) {
-      throw new Error('THREAD_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

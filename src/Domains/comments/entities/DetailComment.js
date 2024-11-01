@@ -17,7 +17,7 @@ class DetailComment {
     id, username, date, content, replies = [],
   }) {
     if (!id || !username || !date || !content || !replies) {
-      throw new Error('COMMENT_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (
@@ -27,7 +27,7 @@ class DetailComment {
       || typeof content !== 'string'
       || !Array.isArray(replies)
     ) {
-      throw new Error('COMMENT_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 

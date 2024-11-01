@@ -17,7 +17,7 @@ class AddedReplyComment {
     }
 
     if (typeof id !== 'string' || typeof content !== 'string' || typeof owner !== 'string') {
-      throw new Error('ADDED_REPLY_COMMENT.PROPERTY_NOT_MEET_DATA_TYPE_NEEDED');
+      throw new Error('ADDED_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
