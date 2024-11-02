@@ -4,9 +4,9 @@ class DeleteCommentUseCase {
   }
 
   async execute(useCasePayload) {
-    const { commentId, owner } = useCasePayload;
+    const { commentId, ownerId } = useCasePayload;
     await this._commentRepository.checkAvailabilityComment(commentId);
-    await this._commentRepository.verifyCommentOwner(commentId, owner);
+    await this._commentRepository.verifyCommentOwner(commentId, ownerId);
 
     return this._commentRepository.deleteCommentById(commentId);
   }

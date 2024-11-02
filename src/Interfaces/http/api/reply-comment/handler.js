@@ -1,3 +1,4 @@
+const autoBind = require('auto-bind');
 const AddReplyCommentUseCase = require('../../../../Applications/use_case/AddReplyCommentUseCase');
 const DeleteReplyCommentUseCase = require('../../../../Applications/use_case/DeleteReplyCommentUseCase');
 
@@ -5,20 +6,19 @@ class ReplyCommentHandler {
   constructor(container) {
     this._container = container;
 
-    this.postReplyHandler = this.postReplyHandler.bind(this);
-    this.deleteReplyByIdHandler = this.deleteReplyByIdHandler.bind(this);
+    autoBind(this);
   }
 
   async postReplyHandler(request, h) {
     const addReplyUseCase = this._container.getInstance(AddReplyCommentUseCase.name);
 
-    const { id: userId } = request.auth.credentials;
+    const { id: ownerId } = request.auth.credentials;
     const { threadId, commentId } = request.params;
 
     const addedReply = await addReplyUseCase.execute(
       commentId,
       threadId,
-      userId,
+      ownerId,
       request.payload,
     );
 
