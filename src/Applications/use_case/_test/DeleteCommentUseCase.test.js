@@ -8,11 +8,8 @@ describe('DeleteCommentUseCase', () => {
     const mockComment = {
       id: 'comment-123',
     };
-    const mockThread = {
-      id: 'thread-123',
-    };
     const mockUser = {
-      id: 'user-123',
+      ownerId: 'user-123',
     };
 
     mockCommentRepository.checkAvailabilityComment = jest
@@ -28,21 +25,20 @@ describe('DeleteCommentUseCase', () => {
     const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
     });
-    await deleteCommentUseCase.execute(
-      mockThread.id,
-      mockComment.id,
-      mockUser.id,
-    );
 
-    expect(mockCommentRepository.checkAvailabilityComment).toHaveBeenCalledWith(
+    await deleteCommentUseCase.execute({
+      commentId: mockComment.id,
+      ownerId: mockUser.ownerId,
+    });
+
+    expect(mockCommentRepository.checkAvailabilityComment).toBeCalledWith(
       mockComment.id,
     );
-    expect(mockCommentRepository.verifyCommentOwner).toHaveBeenCalledWith(
+    expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(
       mockComment.id,
-      mockUser.id,
+      mockUser.ownerId,
     );
-    expect(mockCommentRepository.deleteCommentById).toHaveBeenCalledWith(
-      mockThread.id,
+    expect(mockCommentRepository.deleteCommentById).toBeCalledWith(
       mockComment.id,
     );
   });

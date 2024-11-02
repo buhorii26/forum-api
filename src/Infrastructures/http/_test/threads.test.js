@@ -23,8 +23,8 @@ describe('/threads endpoint', () => {
   describe('when POST /threads', () => {
     it('should response 401 when there is missing authentication', async () => {
       const requestPayload = {
-        title: 'Title goes here',
-        body: 'My body goes here',
+        title: 'Title One',
+        body: 'Body One',
       };
 
       const server = await createServer(container);
@@ -81,7 +81,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY',
+        'tidak dapat membuat thread baru karena input tidak lengkap!',
       );
     });
 
@@ -126,7 +126,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION',
+        'tidak dapat membuat thread baru karena tipe data tidak sesuai!',
       );
     });
 

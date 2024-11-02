@@ -102,7 +102,7 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'ADD_REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
+        'tidak dapat membuat reply comment baru karena input tidak lengkap!',
       );
     });
 
@@ -170,7 +170,7 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'ADD_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION',
+        'tidak dapat membuat reply comment baru tipe data tidak sesuai!',
       );
     });
 
@@ -246,12 +246,12 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
   describe('when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
     it('it should response 401 when there is missing authentication', async () => {
       const loginPayload = {
-        username: 'ryananggada',
-        password: 'password123',
+        username: 'dicoding',
+        password: 'secret',
       };
       const threadPayload = {
-        title: 'My title',
-        body: 'The body of thread',
+        title: 'Title Two',
+        body: 'Body Two',
       };
       const commentPayload = {
         content: 'My comment',
