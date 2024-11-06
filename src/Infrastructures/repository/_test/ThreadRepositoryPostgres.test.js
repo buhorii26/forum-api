@@ -66,4 +66,59 @@ describe('ThreadRepositoryPostgres', () => {
       );
     });
   });
+  describe('getThreadById function', () => {
+    it('should throw NotFoundError if thread is not found', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      await expect(
+        threadRepositoryPostgres.getThreadById('thread-123'),
+      ).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should return correct thread', async () => {
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        title: 'Thread title',
+        body: 'Content of a thread',
+        owner: 'user-123',
+        date: '2024-10-11T02:15:46.336Z',
+      });
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      const thread = await threadRepositoryPostgres.getThreadById('thread-123');
+
+      expect(thread).toStrictEqual({
+        id: 'thread-123',
+        title: 'Thread title',
+        body: 'Content of a thread',
+        username: 'dicoding',
+        date: expect.any(String),
+      });
+    });
+  });
+  describe('verifyAvailableThread function', () => {
+    it('should throw NotFoundError if thread is not found', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      await expect(
+        threadRepositoryPostgres.verifyAvailableThread('thread-123'),
+      ).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw any error if thread is found', async () => {
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        title: 'Thread title',
+        body: 'Content of a thread',
+        userId: 'user-123',
+        createdAt: '2024-10-11T02:15:46.336Z',
+      });
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      await expect(
+        threadRepositoryPostgres.verifyAvailableThread('thread-123'),
+      ).resolves.not.toThrowError(NotFoundError);
+    });
+  });
 });

@@ -28,15 +28,6 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     });
   }
 
-  async getAllThread() {
-    const query = {
-      text: 'SELECT * FROM threads',
-    };
-
-    const result = await this._pool.query(query);
-    return result.rows;
-  }
-
   async getThreadById(id) {
     const query = {
       text: `SELECT threads.id, threads.title, threads.body, threads.date, users.username 

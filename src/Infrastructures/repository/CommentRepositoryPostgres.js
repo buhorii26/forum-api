@@ -67,11 +67,7 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [isDelete, commentId],
     };
 
-    const result = await this._pool.query(query);
-
-    if (!result.rowCount) {
-      throw new NotFoundError('Gagal menghapus komentar. id tidak ditemukan');
-    }
+    await this._pool.query(query);
   }
 
   async getCommentByThreadId(threadId) {

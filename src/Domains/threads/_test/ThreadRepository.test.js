@@ -9,5 +9,11 @@ describe('ThreadRepository interface', () => {
     await expect(threadRepository.addThread('', '')).rejects.toThrow(
       'THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
+    await expect(threadRepository.verifyAvailableThread('', '')).rejects.toThrow(
+      'THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED',
+    );
+    await expect(threadRepository.getThreadById('', '')).rejects.toThrow(
+      'THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED',
+    );
   });
 });

@@ -1,5 +1,6 @@
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
 const pool = require('../../database/postgres/pool');
@@ -74,7 +75,7 @@ describe('UserRepositoryPostgres', () => {
     });
   });
 
-  describe('getPasswordByUsername', () => {
+  describe('getPasswordByUsername function', () => {
     it('should throw InvariantError when user not found', () => {
       // Arrange
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
@@ -99,7 +100,7 @@ describe('UserRepositoryPostgres', () => {
     });
   });
 
-  describe('getIdByUsername', () => {
+  describe('getIdByUsername function', () => {
     it('should throw InvariantError when user not found', async () => {
       // Arrange
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
@@ -120,6 +121,33 @@ describe('UserRepositoryPostgres', () => {
 
       // Assert
       expect(userId).toEqual('user-321');
+    });
+  });
+  describe('getUserById function', () => {
+    it('should throw NotFoundError if users is not found', async () => {
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      await expect(
+        userRepositoryPostgres.getUserById('user-123'),
+      ).rejects.toThrowError(NotFoundError);
+    });
+    it('should return correct thread', async () => {
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret_password',
+        fullname: 'Dicoding Indonesia',
+      });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      const user = await userRepositoryPostgres.getUserById('user-123');
+
+      expect(user).toStrictEqual({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret_password',
+        fullname: 'Dicoding Indonesia',
+      });
     });
   });
 });
