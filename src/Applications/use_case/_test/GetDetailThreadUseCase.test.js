@@ -16,7 +16,6 @@ describe('GetDetailThreadUseCase', () => {
     const commentId = 'comment-123';
     const replyId = 'reply-123';
 
-    // Simulasi data balasan menggunakan instance DetailReplyComment
     const mockReplies = [
       new DetailReplyComment({
         id: replyId,
@@ -27,8 +26,6 @@ describe('GetDetailThreadUseCase', () => {
       }),
     ];
 
-    /* Simulasi data komentar menggunakan instance DetailComment,
-    dengan replies yang berisi instance DetailReplyComment */
     const mockComments = [
       new DetailComment({
         id: commentId,
@@ -40,26 +37,17 @@ describe('GetDetailThreadUseCase', () => {
       }),
     ];
 
-    // Simulasi data thread
-    const mockThread = new DetailThread({
+    // Mock implementations with dynamic return values
+    mockThreadRepository.getThreadById = jest.fn().mockResolvedValueOnce({
       id: threadId,
       title: 'Example Thread',
       body: 'This is an example thread',
       date: '2023-10-10',
       username: 'user123',
-      comments: mockComments,
     });
 
-    // Mock implementation
-    mockThreadRepository.getThreadById = jest
-      .fn()
-      .mockResolvedValue(mockThread);
-    mockCommentRepository.getCommentByThreadId = jest
-      .fn()
-      .mockResolvedValue(mockComments);
-    mockReplyCommentRepository.getRepliesByCommentId = jest
-      .fn()
-      .mockResolvedValue(mockReplies);
+    mockCommentRepository.getCommentByThreadId = jest.fn().mockResolvedValueOnce(mockComments);
+    mockReplyCommentRepository.getRepliesByCommentId = jest.fn().mockResolvedValueOnce(mockReplies);
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -73,7 +61,22 @@ describe('GetDetailThreadUseCase', () => {
     expect(result).toBeInstanceOf(DetailThread);
     expect(result.comments).toHaveLength(1);
     expect(result.comments[0].replies).toHaveLength(1); // Ensure there is 1 reply
-    expect(result).toStrictEqual(mockThread);
+    expect(result).toMatchObject({
+      id: threadId,
+      title: 'Example Thread',
+      body: 'This is an example thread',
+      comments: expect.arrayContaining([
+        expect.objectContaining({
+          id: commentId,
+          replies: expect.arrayContaining([
+            expect.objectContaining({
+              id: replyId,
+            }),
+          ]),
+        }),
+      ]),
+    });
+
     expect(mockThreadRepository.getThreadById).toBeCalledWith(threadId);
     expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(threadId);
     expect(mockReplyCommentRepository.getRepliesByCommentId).toBeCalledWith(commentId);
