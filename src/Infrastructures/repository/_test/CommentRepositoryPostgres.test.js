@@ -46,7 +46,7 @@ describe('CommentRepositoryPostgres', () => {
       );
 
       // Action
-      await commentRepositoryPostgres.addComment(
+      const addedComment = await commentRepositoryPostgres.addComment(
         'thread-123',
         'user-123',
         newComment,
@@ -57,26 +57,6 @@ describe('CommentRepositoryPostgres', () => {
         'comment-123',
       );
       expect(comment).toHaveLength(1);
-    });
-    it('should return added comment correctly', async () => {
-      // Arrange
-      const newComment = new AddComment({
-        content: 'My comment',
-      });
-      const fakeIdGenerator = () => '123'; // stub!
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(
-        pool,
-        fakeIdGenerator,
-      );
-
-      // Action
-      const addedComment = await commentRepositoryPostgres.addComment(
-        'thread-123',
-        'user-123',
-        newComment,
-      );
-
-      // Assert
       expect(addedComment).toStrictEqual(
         new AddedComment({
           id: 'comment-123',
