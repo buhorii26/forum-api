@@ -70,43 +70,37 @@ describe('CommentRepositoryPostgres', () => {
   describe('getCommentByThreadId', () => {
     it('should return get detail comment by thread id ', async () => {
       // Arrange
-      const thId = 'thread-123';
+      const threadId = 'thread-123';
       const commentId = 'comment-123';
-      const uid = 'user-123';
-      const dataComments = [
-        new DetailComment({
-          id: commentId,
-          username: 'buhori',
-          date: '2024-11-01',
-          content: 'ini konten',
-          is_delete: false,
-          replies: [],
-        }),
-      ];
+      const owner = 'user-123';
+
+      const expectedComment = {
+        id: commentId,
+        username: 'buhori',
+        date: '2024-11-01',
+        content: 'ini konten',
+        is_delete: false,
+        replies: [],
+      };
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
-
+      const formattedDate = (date) => date.toISOString().split('T')[0];
       await CommentsTableTestHelper.addComment({
         id: commentId,
-        threadId: thId,
-        owner: uid,
+        threadId,
+        owner,
+        content: 'ini konten',
+        date: '2024-11-01',
       });
 
       // Action
-      const comment = (
-        await commentRepositoryPostgres.getCommentByThreadId(thId)
-      ).map((commentItem) => {
-        const { date, ...rest } = commentItem; // Buat salinan tanpa properti `date`
-        return rest;
-      });
-
-      const dataCommentsWithoutDate = dataComments.map((expectedItem) => {
-        const { date, ...rest } = expectedItem; // Buat salinan tanpa properti `date`
-        return rest;
-      });
+      const comments = await commentRepositoryPostgres.getCommentByThreadId(threadId);
       // Assert
-      expect(comment).toHaveLength(1);
-      expect(comment).toStrictEqual(dataCommentsWithoutDate);
+      expect(comments).toHaveLength(1);
+      expect({
+        ...comments[0],
+        date: formattedDate(new Date(comments[0].date)),
+      }).toStrictEqual(expectedComment);
     });
   });
 
@@ -119,18 +113,37 @@ describe('CommentRepositoryPostgres', () => {
       ).rejects.toThrowError(NotFoundError);
     });
 
-    it('should not throw error if comment is available', async () => {
-      await CommentsTableTestHelper.addComment({
+    it('should return all fields of comment if comment is available', async () => {
+      // Arrange
+      const expectedComment = {
         id: 'comment-123',
         threadId: 'thread-123',
         userId: 'user-123',
+        content: 'This is a test comment',
+        isDelete: false,
+      };
+
+      await CommentsTableTestHelper.addComment({
+        id: expectedComment.id,
+        threadId: expectedComment.threadId,
+        userId: expectedComment.userId,
+        content: expectedComment.content,
+        isDelete: expectedComment.isDelete,
       });
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
-      await expect(
-        commentRepositoryPostgres.checkAvailabilityComment('comment-123'),
-      ).resolves.not.toThrowError(NotFoundError);
+      // Action
+      const result = await commentRepositoryPostgres.checkAvailabilityComment(expectedComment.id);
+
+      // Assert
+      expect(result).toEqual({
+        id: expectedComment.id,
+        thread_id: expectedComment.threadId,
+        owner: expectedComment.userId,
+        content: expectedComment.content,
+        is_delete: expectedComment.isDelete,
+      });
     });
   });
 
@@ -159,6 +172,15 @@ describe('CommentRepositoryPostgres', () => {
       const owner = 'user-123';
       const commentId = 'comment-123';
 
+      const expectedDelete = {
+        id: commentId,
+        thread_id: threadId,
+        owner,
+        content: 'ini konten',
+        is_delete: true,
+        date: '2024-11-07',
+      };
+
       const fakeIdGenerator = () => '123';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
@@ -183,8 +205,12 @@ describe('CommentRepositoryPostgres', () => {
 
       // Pengecekan setelah penghapusan
       const commentAfterDelete = await CommentsTableTestHelper.findCommentsById(commentId);
-      // Memastikan setelah dihapus, is_delete adalah true
-      expect(commentAfterDelete[0].is_delete).toBe(true);
+      const formattedDate = (date) => date.toISOString().split('T')[0];
+      // Memastikan semua field setelah penghapusan
+      expect({
+        ...commentAfterDelete[0],
+        date: formattedDate(new Date(commentAfterDelete[0].date)),
+      }).toStrictEqual(expectedDelete);
     });
   });
 

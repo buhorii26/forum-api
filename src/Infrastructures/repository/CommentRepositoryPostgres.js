@@ -35,7 +35,11 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async checkAvailabilityComment(id) {
     const query = {
-      text: 'SELECT * FROM comments WHERE id = $1',
+      text: `
+        SELECT id, thread_id, owner, content, is_delete
+        FROM comments
+        WHERE id = $1
+      `,
       values: [id],
     };
 
@@ -44,6 +48,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError('comment tidak ditemukan');
     }
+    return result.rows[0];
   }
 
   async verifyCommentOwner(commentId, owner) {
@@ -82,13 +87,14 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     const result = await this._pool.query(query);
 
-    return result.rows.map(
-      (row) => new DetailComment({
-        ...row,
-        isDelete: row.is_delete,
-        replies: row.replies || [], // Jika replies tidak ada, atur ke array kosong
-      }),
-    );
+    return result.rows.map((row) => ({
+      id: row.id,
+      content: row.is_delete ? '**komentar telah dihapus**' : row.content,
+      date: row.date,
+      username: row.username,
+      is_delete: row.is_delete,
+      replies: row.replies || [],
+    }));
   }
 }
 
