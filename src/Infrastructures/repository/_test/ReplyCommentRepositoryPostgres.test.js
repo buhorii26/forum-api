@@ -147,17 +147,28 @@ describe('ReplyRepositoryPostgres', () => {
     });
 
     it('should not throw error if reply is available', async () => {
+      // Arrange
       await RepliesTableTestHelper.addReplyComment({
         id: 'reply-123',
-        commentId: 'comment-123',
-        threadId: 'thread-123',
-        userId: 'user-123',
+        content: 'Nice article!',
+        comment_id: 'comment-123',
+        owner: 'user-123',
+        is_delete: false,
+        date: '2024-10-11T02:15:46.336Z',
       });
 
+      // Action & Assert
       const replyRepositoryPostgres = new ReplyCommentRepositoryPostgres(pool, {});
-      await expect(
-        replyRepositoryPostgres.checkAvailabilityReply('reply-123'),
-      ).resolves.not.toThrowError(NotFoundError);
+      const result = await replyRepositoryPostgres.checkAvailabilityReply('reply-123');
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toStrictEqual({
+        id: 'reply-123',
+        content: 'Nice article!',
+        comment_id: 'comment-123',
+        owner: 'user-123',
+        is_delete: false,
+        date: '2024-10-11T02:15:46.336Z',
+      });
     });
   });
 

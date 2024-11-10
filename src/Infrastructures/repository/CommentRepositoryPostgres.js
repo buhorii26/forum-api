@@ -64,12 +64,14 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  async deleteCommentById(commentId) {
-    const isDelete = true;
-
+  async deleteCommentById(threadId, commentId) {
     const query = {
-      text: 'UPDATE comments SET is_delete = $1 WHERE id = $2 returning id',
-      values: [isDelete, commentId],
+      text: `
+        UPDATE comments
+        SET is_delete = true
+        WHERE thread_id = $1 AND id = $2
+      `,
+      values: [threadId, commentId],
     };
 
     await this._pool.query(query);
@@ -86,15 +88,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
-
-    return result.rows.map((row) => ({
-      id: row.id,
-      content: row.is_delete ? '**komentar telah dihapus**' : row.content,
-      date: row.date,
-      username: row.username,
-      is_delete: row.is_delete,
-      replies: row.replies || [],
-    }));
+    return result.rows;
   }
 }
 

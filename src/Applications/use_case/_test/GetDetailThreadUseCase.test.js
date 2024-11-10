@@ -1,187 +1,174 @@
 const ReplyCommentRepository = require('../../../Domains/reply-comment/ReplyCommentRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const UserRepository = require('../../../Domains/users/UserRepository');
 const GetDetailThreadUseCase = require('../GetDetailThreadUseCase');
-const DetailThread = require('../../../Domains/threads/entities/DetailThread');
-const DetailComment = require('../../../Domains/comments/entities/DetailComment');
-const DetailReplyComment = require('../../../Domains/reply-comment/entities/DetailReplyComment');
 
-describe('GetDetailThreadUseCase', () => {
-  it('should return thread with comments and replies when comments and replies exist', async () => {
+describe('GetdetailThreadUseCase', () => {
+  it('should orchestrating the get thread detail action with comments and replies correctly', async () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyCommentRepository = new ReplyCommentRepository();
+    const mockUserRepository = new UserRepository();
 
-    const threadId = 'thread-123';
-    const commentId = 'comment-123';
-    const replyId = 'reply-123';
+    const mockThreadData = {
+      id: 'thread-123',
+      title: 'My thread',
+      body: 'Thread content goes here',
+      date: '2024-10-04T10:24:47.551Z',
+      username: 'johndoe',
+    };
 
-    const mockReplies = [
-      new DetailReplyComment({
-        id: replyId,
-        content: 'Example reply',
-        date: '2023-10-10',
-        username: 'user456',
+    const mockCommentData = [
+      {
+        id: 'comment-123',
+        content: 'Test comment one',
+        thread_id: 'thread-123',
+        date: '2024-10-07T01:58:38.808Z',
         is_delete: false,
-      }),
+        username: 'buhori',
+      },
+      {
+        id: 'comment-456',
+        content: 'Test comment two',
+        thread_id: 'thread-123',
+        date: '2024-10-07T02:54:10.771Z',
+        is_delete: true,
+        username: 'johndoe',
+      },
     ];
 
-    const mockComments = [
-      new DetailComment({
-        id: commentId,
-        username: 'user123',
-        date: '2023-10-10',
-        content: 'Example comment',
+    const mockReplyData = [
+      {
+        id: 'reply-123',
+        content: 'Reply goes here',
+        comment_id: 'comment-123',
         is_delete: false,
-        replies: mockReplies,
-      }),
+        date: '2024-10-07T02:54:38.565Z',
+        username: 'johndoe',
+      },
+      {
+        id: 'reply-456',
+        content: 'Reply goes here again',
+        comment_id: 'comment-123',
+        is_delete: true,
+        date: '2024-10-07T02:55:46.810Z',
+        username: 'buhori',
+      },
     ];
 
-    // Mock implementations with dynamic return values
-    mockThreadRepository.getThreadById = jest.fn().mockResolvedValueOnce({
-      id: threadId,
-      title: 'Example Thread',
-      body: 'This is an example thread',
-      date: '2023-10-10',
-      username: 'user123',
-    });
-
-    mockCommentRepository.getCommentByThreadId = jest.fn().mockResolvedValueOnce(mockComments);
-    mockReplyCommentRepository.getRepliesByCommentId = jest.fn().mockResolvedValueOnce(mockReplies);
-
-    const getDetailThreadUseCase = new GetDetailThreadUseCase({
-      threadRepository: mockThreadRepository,
-      commentRepository: mockCommentRepository,
-      replyCommentRepository: mockReplyCommentRepository,
-    });
-
-    const result = await getDetailThreadUseCase.execute(threadId);
-
-    // Assert
-    expect(result).toBeInstanceOf(DetailThread);
-    expect(result.comments).toHaveLength(1);
-    expect(result.comments[0].replies).toHaveLength(1); // Ensure there is 1 reply
-    expect(result).toMatchObject({
-      id: threadId,
-      title: 'Example Thread',
-      body: 'This is an example thread',
-      comments: expect.arrayContaining([
-        expect.objectContaining({
-          id: commentId,
-          replies: expect.arrayContaining([
-            expect.objectContaining({
-              id: replyId,
-            }),
-          ]),
-        }),
-      ]),
-    });
-
-    expect(mockThreadRepository.getThreadById).toBeCalledWith(threadId);
-    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(threadId);
-    expect(mockReplyCommentRepository.getRepliesByCommentId).toBeCalledWith(commentId);
-  });
-
-  it('should return thread with comments but no replies when no replies exist', async () => {
-    const mockThreadRepository = new ThreadRepository();
-    const mockCommentRepository = new CommentRepository();
-    const mockReplyCommentRepository = new ReplyCommentRepository();
-
-    const threadId = 'thread-123';
-    const commentId = 'comment-123';
-
-    // Simulasi data tanpa balasan
-    const mockComments = [
-      new DetailComment({
-        id: commentId,
-        username: 'user123',
-        date: '2023-10-10',
-        content: 'Example comment',
-        is_delete: false,
-        replies: [], // No replies here
-      }),
-    ];
-
-    // Simulasi data thread
-    const mockThread = new DetailThread({
-      id: threadId,
-      title: 'Example Thread',
-      body: 'This is an example thread',
-      date: '2023-10-10',
-      username: 'user123',
-      comments: mockComments,
-    });
-
-    // Mock implementation
     mockThreadRepository.getThreadById = jest
       .fn()
-      .mockResolvedValue(mockThread);
+      .mockImplementation(() => Promise.resolve(mockThreadData));
     mockCommentRepository.getCommentByThreadId = jest
       .fn()
-      .mockResolvedValue(mockComments);
+      .mockImplementation(() => Promise.resolve(mockCommentData));
     mockReplyCommentRepository.getRepliesByCommentId = jest
       .fn()
-      .mockResolvedValue([]); // No replies returned
+      .mockImplementation((commentId) => {
+        if (commentId === 'comment-123') {
+          return Promise.resolve(mockReplyData);
+        }
+
+        return Promise.resolve([]);
+      });
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
+      userRepository: mockUserRepository,
       commentRepository: mockCommentRepository,
       replyCommentRepository: mockReplyCommentRepository,
     });
 
-    const result = await getDetailThreadUseCase.execute(threadId);
+    const detailThread = await getDetailThreadUseCase.execute('thread-123');
 
-    // Assert
-    expect(result).toBeInstanceOf(DetailThread);
-    expect(result.comments).toHaveLength(1);
-    expect(result.comments[0].replies).toHaveLength(0); // No replies
-    expect(result).toStrictEqual(mockThread);
-    expect(mockThreadRepository.getThreadById).toBeCalledWith(threadId);
-    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(threadId);
-    expect(mockReplyCommentRepository.getRepliesByCommentId).toBeCalledWith(commentId);
+    expect(mockThreadRepository.getThreadById).toBeCalledWith('thread-123');
+    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(
+      'thread-123',
+    );
+    expect(mockReplyCommentRepository.getRepliesByCommentId).toBeCalledWith(
+      'comment-123',
+    );
+
+    expect(detailThread).toMatchObject({
+      id: 'thread-123',
+      title: 'My thread',
+      body: 'Thread content goes here',
+      username: 'johndoe',
+    });
+
+    expect(detailThread.comments).toHaveLength(2);
+
+    expect(detailThread.comments[0]).toMatchObject({
+      id: 'comment-123',
+      username: 'buhori',
+      content: 'Test comment one',
+    });
+
+    expect(detailThread.comments[1]).toMatchObject({
+      id: 'comment-456',
+      username: 'johndoe',
+      content: '**komentar telah dihapus**',
+    });
+
+    expect(detailThread.comments[0].replies).toHaveLength(2);
+
+    expect(detailThread.comments[0].replies[0]).toMatchObject({
+      id: 'reply-123',
+      username: 'johndoe',
+      content: 'Reply goes here',
+    });
+
+    expect(detailThread.comments[0].replies[1]).toMatchObject({
+      id: 'reply-456',
+      username: 'buhori',
+      content: '**balasan telah dihapus**',
+    });
+
+    expect(detailThread.comments[1].replies).toHaveLength(0);
   });
 
-  it('should return thread with no comments when no comments exist', async () => {
+  it('should orchestrating the get thread detail action without comments and replies correctly', async () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyCommentRepository = new ReplyCommentRepository();
+    const mockUserRepository = new UserRepository();
 
-    const threadId = 'thread-123';
+    const mockThreadData = {
+      id: 'thread-123',
+      title: 'My thread',
+      body: 'Thread content goes here',
+      date: '2024-10-04T10:24:47.551Z',
+      username: 'johndoe',
+    };
 
-    // Simulasi thread tanpa komentar
-    const mockThread = new DetailThread({
-      id: threadId,
-      title: 'Example Thread',
-      body: 'This is an example thread',
-      date: '2023-10-10',
-      username: 'user123',
-      comments: [],
-    });
-
-    // Mock implementation
     mockThreadRepository.getThreadById = jest
       .fn()
-      .mockResolvedValue(mockThread);
+      .mockImplementation(() => Promise.resolve(mockThreadData));
     mockCommentRepository.getCommentByThreadId = jest
       .fn()
-      .mockResolvedValue([]); // No comments returned
+      .mockImplementation(() => Promise.resolve([]));
     mockReplyCommentRepository.getRepliesByCommentId = jest
       .fn()
-      .mockResolvedValue([]);
+      .mockImplementation(() => Promise.resolve([]));
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
+      userRepository: mockUserRepository,
       commentRepository: mockCommentRepository,
       replyCommentRepository: mockReplyCommentRepository,
     });
 
-    const result = await getDetailThreadUseCase.execute(threadId);
+    const detailThread = await getDetailThreadUseCase.execute('thread-123');
 
-    // Assert
-    expect(result).toBeInstanceOf(DetailThread);
-    expect(result.comments).toHaveLength(0); // No comments
-    expect(result).toStrictEqual(mockThread);
-    expect(mockThreadRepository.getThreadById).toBeCalledWith(threadId);
-    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(threadId);
+    expect(mockThreadRepository.getThreadById).toBeCalledWith('thread-123');
+
+    expect(detailThread).toMatchObject({
+      id: 'thread-123',
+      title: 'My thread',
+      body: 'Thread content goes here',
+      username: 'johndoe',
+    });
+    expect(detailThread.comments).toHaveLength(0);
   });
 });

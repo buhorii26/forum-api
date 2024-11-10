@@ -59,6 +59,7 @@ class ReplyCommentRepositoryPostgres extends ReplyCommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError('reply not found');
     }
+    return result;
   }
 
   async deleteReplyById(threadId, commentId, replyId) {
