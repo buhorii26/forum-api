@@ -22,38 +22,34 @@ describe('GetdetailThreadUseCase', () => {
     const mockCommentData = [
       {
         id: 'comment-123',
-        content: 'Test comment one',
-        thread_id: 'thread-123',
+        username: 'buhori',
         date: '2024-10-07T01:58:38.808Z',
         is_delete: false,
-        username: 'buhori',
+        content: 'Test comment one',
       },
       {
         id: 'comment-456',
-        content: 'Test comment two',
-        thread_id: 'thread-123',
+        username: 'johndoe',
         date: '2024-10-07T02:54:10.771Z',
         is_delete: true,
-        username: 'johndoe',
+        content: '**komentar telah dihapus**',
       },
     ];
 
     const mockReplyData = [
       {
         id: 'reply-123',
-        content: 'Reply goes here',
-        comment_id: 'comment-123',
-        is_delete: false,
-        date: '2024-10-07T02:54:38.565Z',
         username: 'johndoe',
+        date: '2024-10-07T02:54:38.565Z',
+        is_delete: false,
+        content: 'Reply goes here',
       },
       {
         id: 'reply-456',
-        content: 'Reply goes here again',
-        comment_id: 'comment-123',
-        is_delete: true,
-        date: '2024-10-07T02:55:46.810Z',
         username: 'buhori',
+        date: '2024-10-07T02:55:46.810Z',
+        is_delete: true,
+        content: '**balasan telah dihapus**',
       },
     ];
 
@@ -162,6 +158,8 @@ describe('GetdetailThreadUseCase', () => {
     const detailThread = await getDetailThreadUseCase.execute('thread-123');
 
     expect(mockThreadRepository.getThreadById).toBeCalledWith('thread-123');
+    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith('thread-123');
+    expect(mockReplyCommentRepository.getRepliesByCommentId).toBeCalledTimes(0);
 
     expect(detailThread).toMatchObject({
       id: 'thread-123',

@@ -5,6 +5,10 @@ describe('DeleteCommentUseCase', () => {
   it('should orchestrating the delete comment action correctly', async () => {
     const mockCommentRepository = new CommentRepository();
 
+    const mockThread = {
+      id: 'thread-123',
+    };
+
     const mockComment = {
       id: 'comment-123',
     };
@@ -28,6 +32,7 @@ describe('DeleteCommentUseCase', () => {
 
     await deleteCommentUseCase.execute({
       commentId: mockComment.id,
+      threadId: mockThread.id,
       ownerId: mockUser.ownerId,
     });
 
@@ -39,6 +44,7 @@ describe('DeleteCommentUseCase', () => {
       mockUser.ownerId,
     );
     expect(mockCommentRepository.deleteCommentById).toBeCalledWith(
+      mockThread.id,
       mockComment.id,
     );
   });
