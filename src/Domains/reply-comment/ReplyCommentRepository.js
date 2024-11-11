@@ -11,7 +11,7 @@ class ReplyCommentRepository {
     throw new Error('REPLY_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async checkAvailabilityReply(id) {
+  async checkAvailableReply(id) {
     throw new Error('REPLY_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

@@ -8,7 +8,7 @@ describe('CommentRepository interface', () => {
       'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(
-      commentRepository.checkAvailabilityComment(''),
+      commentRepository.checkAvailableComment(''),
     ).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(commentRepository.verifyCommentOwner('', '')).rejects.toThrow(
       'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',

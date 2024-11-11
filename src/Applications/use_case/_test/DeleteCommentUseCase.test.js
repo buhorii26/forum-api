@@ -16,7 +16,7 @@ describe('DeleteCommentUseCase', () => {
       ownerId: 'user-123',
     };
 
-    mockCommentRepository.checkAvailabilityComment = jest
+    mockCommentRepository.checkAvailableComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.verifyCommentOwner = jest
@@ -36,7 +36,7 @@ describe('DeleteCommentUseCase', () => {
       ownerId: mockUser.ownerId,
     });
 
-    expect(mockCommentRepository.checkAvailabilityComment).toBeCalledWith(
+    expect(mockCommentRepository.checkAvailableComment).toBeCalledWith(
       mockComment.id,
     );
     expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(

@@ -48,7 +48,7 @@ class ReplyCommentRepositoryPostgres extends ReplyCommentRepository {
     return result.rows;
   }
 
-  async checkAvailabilityReply(id) {
+  async checkAvailableReply(id) {
     const query = {
       text: 'SELECT * FROM reply_comment WHERE id = $1',
       values: [id],
@@ -59,7 +59,6 @@ class ReplyCommentRepositoryPostgres extends ReplyCommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError('reply not found');
     }
-    return result;
   }
 
   async deleteReplyById(threadId, commentId, replyId) {

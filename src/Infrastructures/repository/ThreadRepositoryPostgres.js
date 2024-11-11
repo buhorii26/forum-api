@@ -46,7 +46,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     return result.rows[0];
   }
 
-  async verifyAvailableThread(id) {
+  async checkAvailableThread(id) {
     const query = {
       text: 'SELECT * FROM threads WHERE id = $1',
       values: [id],
@@ -57,8 +57,6 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (!result.rowCount) {
       throw new NotFoundError('thread not found');
     }
-
-    return result;
   }
 }
 

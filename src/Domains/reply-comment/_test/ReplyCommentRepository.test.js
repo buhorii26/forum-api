@@ -17,7 +17,7 @@ describe('ReplyCommentRepository interface', () => {
       'REPLY_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(
-      replyCommentRepository.checkAvailabilityReply(''),
+      replyCommentRepository.checkAvailableReply(''),
     ).rejects.toThrow('REPLY_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

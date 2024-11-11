@@ -84,17 +84,7 @@ describe('ThreadRepositoryPostgres', () => {
       });
     });
   });
-  describe('verifyAvailableThread function', () => {
-    it('should throw NotFoundError if thread is not found', async () => {
-      // Arrange
-      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-
-      // Action & Assert
-      await expect(
-        threadRepositoryPostgres.verifyAvailableThread('thread-123'),
-      ).rejects.toThrowError(NotFoundError);
-    });
-
+  describe('checkAvailableThread function', () => {
     it('should not throw error if thread is available', async () => {
       // Arrange
       await ThreadsTableTestHelper.addThread({
@@ -108,16 +98,19 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
       // Action & Assert
-      const result = await threadRepositoryPostgres.verifyAvailableThread('thread-123');
 
-      const [thread] = result.rows;
+      await expect(
+        threadRepositoryPostgres.checkAvailableThread('thread-123'),
+      ).resolves.not.toThrowError(NotFoundError);
+    });
+    it('should throw NotFoundError if thread is not found', async () => {
+      // Arrange
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
-      // Verifikasi field secara mendalam
-      expect(thread).toHaveProperty('id', 'thread-123');
-      expect(thread).toHaveProperty('title', 'Thread title');
-      expect(thread).toHaveProperty('body', 'Content of a thread');
-      expect(thread).toHaveProperty('owner', 'user-123');
-      expect(thread).toHaveProperty('date', '2024-10-11T02:15:46.336Z');
+      // Action & Assert
+      await expect(
+        threadRepositoryPostgres.checkAvailableThread('thread-123'),
+      ).rejects.toThrowError(NotFoundError);
     });
   });
 });

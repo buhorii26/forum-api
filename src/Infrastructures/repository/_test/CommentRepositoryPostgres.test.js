@@ -119,15 +119,7 @@ describe('CommentRepositoryPostgres', () => {
     });
   });
 
-  describe('checkAvailabilityComment function', () => {
-    it('should throw error if comment is not found', async () => {
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
-
-      await expect(
-        commentRepositoryPostgres.checkAvailabilityComment('comment-123'),
-      ).rejects.toThrowError(NotFoundError);
-    });
-
+  describe('checkAvailableComment function', () => {
     it('should return all fields of comment if comment is available', async () => {
       // Arrange
       const expectedComment = {
@@ -148,14 +140,16 @@ describe('CommentRepositoryPostgres', () => {
 
       // Action & Assert
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
-      const result = await commentRepositoryPostgres.checkAvailabilityComment(expectedComment.id);
-      expect(result).toStrictEqual({
-        id: expectedComment.id,
-        thread_id: expectedComment.threadId,
-        owner: expectedComment.owner,
-        content: expectedComment.content,
-        is_delete: expectedComment.isDelete,
-      });
+      await expect(
+        commentRepositoryPostgres.checkAvailableComment('comment-123'),
+      ).resolves.not.toThrowError(NotFoundError);
+    });
+    it('should throw error if comment is not found', async () => {
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      await expect(
+        commentRepositoryPostgres.checkAvailableComment('comment-123'),
+      ).rejects.toThrowError(NotFoundError);
     });
   });
 

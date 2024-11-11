@@ -33,7 +33,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     });
   }
 
-  async checkAvailabilityComment(id) {
+  async checkAvailableComment(id) {
     const query = {
       text: `
         SELECT id, thread_id, owner, content, is_delete
@@ -48,7 +48,6 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError('comment tidak ditemukan');
     }
-    return result.rows[0];
   }
 
   async verifyCommentOwner(commentId, owner) {

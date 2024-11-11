@@ -18,7 +18,7 @@ describe('DeleteReplyCommentUseCase', () => {
       id: 'user-123',
     };
 
-    mockReplyCommentRepository.checkAvailabilityReply = jest
+    mockReplyCommentRepository.checkAvailableReply = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
     mockReplyCommentRepository.verifyReplyOwner = jest
@@ -39,7 +39,7 @@ describe('DeleteReplyCommentUseCase', () => {
       mockUser.id,
     );
 
-    expect(mockReplyCommentRepository.checkAvailabilityReply).toBeCalledWith(
+    expect(mockReplyCommentRepository.checkAvailableReply).toBeCalledWith(
       mockReply.id,
     );
     expect(mockReplyCommentRepository.verifyReplyOwner).toBeCalledWith(
