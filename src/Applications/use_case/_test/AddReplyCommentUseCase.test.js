@@ -31,10 +31,9 @@ describe('AddReplyCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
 
-    // Simulasi nilai yang dikembalikan oleh checkAvailableThread
     mockThreadRepository.checkAvailableThread = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ rowCount: 1 })); // Simulasi dengan rowCount
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.checkAvailableComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
