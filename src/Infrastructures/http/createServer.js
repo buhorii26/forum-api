@@ -14,14 +14,6 @@ const createServer = async (container) => {
     port: process.env.PORT,
   });
 
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: () => ({
-      value: 'Hello world!',
-    }),
-  });
-
   // registrasi plugin eksternal
   await server.register([
     {
