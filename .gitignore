@@ -3,3 +3,4 @@ package-lock.json
 config/database/test.json
 coverage
 .env
+key_pair
