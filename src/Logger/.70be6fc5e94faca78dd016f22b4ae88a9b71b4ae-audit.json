@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 7
+    },
+    "auditLog": "C:\\xampp\\htdocs\\forum-api\\src\\Logger\\.70be6fc5e94faca78dd016f22b4ae88a9b71b4ae-audit.json",
+    "files": [
+        {
+            "date": 1732078388374,
+            "name": "C:\\xampp\\htdocs\\forum-api\\src\\Logger\\application-2024-11-20-13.log",
+            "hash": "ad9c7eb5cc70dd9f88d8378caaeebb407a424007da6cff7b72234f4318f9a1c1"
+        }
+    ],
+    "hashType": "sha256"
+}

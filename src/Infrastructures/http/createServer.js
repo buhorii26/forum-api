@@ -7,6 +7,7 @@ const users = require('../../Interfaces/http/api/users');
 const comments = require('../../Interfaces/http/api/comments');
 const reply = require('../../Interfaces/http/api/reply-comment');
 const authentications = require('../../Interfaces/http/api/authentications');
+const logger = require('../../Logger');
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -103,6 +104,12 @@ const createServer = async (container) => {
       return newResponse;
     }
 
+    // logging
+    logger.info(
+      `userIP=${request.info.remoteAddress}, host=${request.hostname},  method=${
+        request.method
+      }, path=${request.path}, payload=${JSON.stringify(response.source)}`,
+    );
     // jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
     return h.continue;
   });
