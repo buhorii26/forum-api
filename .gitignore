@@ -4,3 +4,4 @@ config/database/test.json
 coverage
 .env
 key_pair
+access_key_aws

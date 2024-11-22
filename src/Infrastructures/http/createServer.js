@@ -1,5 +1,6 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const os = require('os');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
 const threads = require('../../Interfaces/http/api/threads');
@@ -106,7 +107,7 @@ const createServer = async (container) => {
 
     // logging
     logger.info(
-      `userIP=${request.info.remoteAddress}, host=${request.hostname},  method=${
+      `userIP=${request.info.remoteAddress}, host=${os.hostname},  method=${
         request.method
       }, path=${request.path}, payload=${JSON.stringify(response.source)}`,
     );

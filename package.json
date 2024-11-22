@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.696.0",
     "@hapi/hapi": "^20.1.5",
     "@hapi/inert": "^7.1.0",
     "@hapi/jwt": "^2.0.1",
@@ -26,6 +27,7 @@
     "nanoid": "^3.1.23",
     "pg": "^8.6.0",
     "winston": "^3.17.0",
+    "winston-cloudwatch": "^6.3.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
