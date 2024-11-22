@@ -12,7 +12,7 @@ const logger = require('../../Logger');
 
 const createServer = async (container) => {
   const server = Hapi.server({
-    host: process.env.NODE_ENV !== 'production' ? 'localhost' : '13.212.101.49',
+    host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
     port: process.env.PORT,
   });
 
