@@ -8,20 +8,20 @@ const users = require('../../Interfaces/http/api/users');
 const comments = require('../../Interfaces/http/api/comments');
 const reply = require('../../Interfaces/http/api/reply-comment');
 const authentications = require('../../Interfaces/http/api/authentications');
+const config = require('../../Commons/config');
 const logger = require('../../Logger');
 
 const createServer = async (container) => {
   const server = Hapi.server({
-    host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
-    port: process.env.PORT,
+    port: config.app.port,
+    host: config.app.host,
+    debug: config.app.debug,
   });
 
   server.route({
     method: 'GET',
     path: '/',
-    handler: () => ({
-      value: 'Hello world!',
-    }),
+    handler: (request, h) => 'Hello, World! This is from Instance 1',
   });
 
   // registrasi plugin eksternal
