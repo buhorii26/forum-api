@@ -26,8 +26,14 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
+          echo "Navigating to application directory"
           cd ~/forum-api
+          echo "Pulling latest code from GitHub"
           git pull origin main
+          echo "Installing dependencies"
           npm install
+          echo "Running database migrations"
           npm run migrate up
+          echo "Restarting the application using PM2"
           pm2 restart forum-api
+          echo "Deployment completed successfully"
