@@ -25,9 +25,9 @@ exports.up = (pgm) => {
     },
   });
   /*
-    memberikan constraint foreign key pada comments.threadId
-    terhadap threads.id
-    */
+      memberikan constraint foreign key pada comments.threadId
+      terhadap threads.id
+      */
   pgm.addConstraint('comments', 'fk_comments.thread_id_threads.id', {
     foreignKeys: {
       columns: 'thread_id',
@@ -36,9 +36,9 @@ exports.up = (pgm) => {
     },
   });
   /*
-    memberikan constraint foreign key pada comments.owner
-    terhadap users.id
-    */
+      memberikan constraint foreign key pada comments.owner
+      terhadap users.id
+      */
   pgm.addConstraint('comments', 'fk_comments.owner_users.id', {
     foreignKeys: {
       columns: 'owner',
