@@ -15,6 +15,7 @@ exports.up = (pgm) => {
     date: {
       type: 'TEXT',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
     owner: {
       type: 'VARCHAR(50)',

@@ -37,9 +37,9 @@ describe('AddReplyCommentUseCase', () => {
     mockCommentRepository.checkAvailableComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
-    mockReplyCommentRepository.addReplyComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(mockAddedReplyComment));
+    mockReplyCommentRepository.addReplyComment = jest.fn(
+      () => Promise.resolve(mockAddedReplyComment),
+    );
 
     const addReplyCommentUseCase = new AddReplyCommentUseCase({
       replyCommentRepository: mockReplyCommentRepository,
