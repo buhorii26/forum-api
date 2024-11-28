@@ -10,13 +10,7 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2  
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}  
-    - name: Deploy to EC2
+    - name: SSH and deploy app
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -28,3 +22,4 @@ jobs:
           git pull origin main
           npm install
           npm run migrate up
+          pm2 restart forum-api
